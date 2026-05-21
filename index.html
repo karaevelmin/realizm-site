@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>3D визуализация архитектуры и интерактив на Unreal Engine 5 - REALIZM, Минск</title>
+    <meta name="description" content="Студия архитектурной 3D визуализации REALIZM. Кинематографическая анимация, интерактивные решения на Unreal Engine 5. Минск, Беларусь.">
+    <meta name="keywords" content="3D визуализация, архитектурная визуализация, Unreal Engine, UE5, интерактив, рендер, анимация, Минск">
+    <meta name="author" content="REALIZM">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#09090b">
+    <link rel="canonical" href="https://realizm.by/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://realizm.by/">
+    <meta property="og:title" content="3D визуализация архитектуры и интерактив на Unreal Engine 5 - REALIZM">
+    <meta property="og:description" content="Кинематографическая 3D визуализация и интерактивные real-time решения на Unreal Engine 5. Мы создаём восприятие пространства до его строительства.">
+    <meta property="og:image" content="https://realizm.by/assets/img/og-preview.jpg">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="REALIZM">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="REALIZM - 3D визуализация на Unreal Engine 5">
+    <meta name="twitter:description" content="Кинематографическая 3D визуализация и интерактивные real-time решения на Unreal Engine 5.">
+    <meta name="twitter:image" content="https://realizm.by/assets/img/og-preview.jpg">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300ffff'/%3E%3Cstop offset='100%25' stop-color='%23b026ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='12' fill='%2309090b'/%3E%3Ctext x='50%25' y='52%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial Black, sans-serif' font-size='28' font-weight='900' fill='url(%23g)'%3ER%3C/text%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://www.youtube-nocookie.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@200;300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "REALIZM",
+      "alternateName": "Студия 3D визуализации REALIZM",
+      "description": "Студия архитектурной 3D визуализации и интерактивных решений на Unreal Engine 5.",
+      "url": "https://realizm.by",
+      "email": "karaevelmin@gmail.com",
+      "founder": { "@type": "Person", "name": "Эльмин Караев" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Минск", "addressCountry": "BY" },
+      "areaServed": ["BY", "RU", "KZ", "Worldwide"],
+      "serviceType": ["3D визуализация", "Архитектурная визуализация", "Unreal Engine 5", "Real-time интерактив", "3D анимация"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "3D визуализация жилых комплексов",
+      "provider": { "@type": "Organization", "name": "REALIZM" },
+      "areaServed": ["BY", "RU", "AE", "EU"],
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "EUR",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": "2000",
+          "maxPrice": "15000"
+        }
+      }
+    }
+    </script>
+
+    <style>
+        @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+        :root {
+            --bg: #09090b;
+            --surface: #121214;
+            --surface-light: #1c1c1f;
+            --text: #ffffff;
+            --text-dim: #9ca3af;
+            --glass-bg: rgba(30, 30, 35, 0.66);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #00ffff;
+            --neon-purple: #b026ff;
+            --font-primary: 'Inter', sans-serif;
+            --font-heading: 'Montserrat', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --container: min(1600px, calc(100vw - 8vw));
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        body.is-locked { overflow: hidden; height: 100vh; }
+        a { color: inherit; text-decoration: none; }
+        button, input, textarea, select { font: inherit; }
+        button { border: 0; }
+        img { display: block; max-width: 100%; }
+        .container { width: var(--container); margin: 0 auto; }
+
+        @media (pointer: fine) {
+            body, a, button, input, textarea, select, .hover-target, .project-card { cursor: none !important; }
+        }
+
+        .skip-link {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 11000;
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #09090b;
+            transform: translateY(-160%);
+            transition: transform 0.25s var(--ease);
+        }
+        .skip-link:focus { transform: translateY(0); }
+
+        .gradient-text,
+        .gradient-text-anim,
+        .mono-italic {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        .gradient-text-anim,
+        .mono-italic {
+            display: inline-block;
+            padding: 0 0.08em;
+        }
+        .mono-italic {
+            font-family: var(--font-mono);
+            font-style: italic;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9997;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            z-index: 11000;
+            pointer-events: none;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s, border 0.3s, box-shadow 0.3s;
+        }
+        .custom-cursor.hover {
+            width: 58px;
+            height: 58px;
+            border: 1px solid rgba(176, 38, 255, 0.8);
+            background: rgba(0, 255, 255, 0.05);
+            box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.2), 0 0 20px rgba(176, 38, 255, 0.3);
+            mix-blend-mode: difference;
+        }
+        .custom-cursor.clicking { background: var(--neon-purple); }
+        #trail-container {
+            position: fixed;
+            inset: 0;
+            z-index: 10999;
+            pointer-events: none;
+        }
+        .trail-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue), 0 0 18px var(--neon-purple);
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        @keyframes spin-border { to { --angle: 360deg; } }
+
+        header,
+        .icon-btn,
+        .btn-outline,
+        .slider-arrow,
+        .carousel-btn,
+        .tour-btn {
+            position: relative;
+            z-index: 1;
+            border: 1px solid var(--glass-border);
+            background-color: var(--glass-bg);
+            background-clip: padding-box;
+            color: var(--text);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease), background 0.35s var(--ease);
+        }
+        header::after,
+        .icon-btn::after,
+        .btn-outline::after,
+        .slider-arrow::after,
+        .carousel-btn::after,
+        .tour-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            padding: 1px;
+            opacity: 0;
+            pointer-events: none;
+            background: conic-gradient(from var(--angle), var(--neon-blue), var(--neon-purple), var(--neon-blue));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            transition: opacity 0.35s var(--ease);
+        }
+        header:hover,
+        .icon-btn:hover,
+        .btn-outline:hover,
+        .slider-arrow:hover,
+        .carousel-btn:hover,
+        .tour-btn:hover {
+            border-color: transparent;
+            box-shadow: 0 0 18px rgba(176, 38, 255, 0.24), 0 0 18px rgba(0, 255, 255, 0.22);
+        }
+        header:hover::after,
+        .icon-btn:hover::after,
+        .btn-outline:hover::after,
+        .slider-arrow:hover::after,
+        .carousel-btn:hover::after,
+        .tour-btn:hover::after {
+            opacity: 1;
+            animation: spin-border 2.6s linear infinite;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            min-height: 42px;
+            padding: 0.72rem 1.35rem;
+            border-radius: 40px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .btn-glow {
+            border-color: transparent;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.18), rgba(176, 38, 255, 0.18));
+            box-shadow: 0 0 26px rgba(0, 255, 255, 0.12);
+        }
+        .btn-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.74rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.25s var(--ease);
+        }
+        .btn-text:hover { color: var(--text); }
+
+        h1, h2, h3 { font-family: var(--font-heading); }
+        .hero-title,
+        h2 {
+            font-size: clamp(2rem, 4.4vw, 4.3rem);
+            font-weight: 300;
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+        .section-label {
+            display: block;
+            margin-bottom: 2rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        #preloader-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 10998;
+            background: var(--bg);
+            transition: opacity 0.8s var(--ease), visibility 0.8s var(--ease);
+        }
+        #intro-logo {
+            position: fixed;
+            inset: 0;
+            z-index: 10999;
+            display: grid;
+            place-items: center;
+            padding: 2rem;
+            text-align: center;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 255, 255, 0.08), transparent 48%),
+                radial-gradient(ellipse at 80% 80%, rgba(176, 38, 255, 0.08), transparent 48%);
+            transition: opacity 0.75s var(--ease), visibility 0.75s var(--ease);
+        }
+        .intro-panel {
+            position: relative;
+            display: flex;
+            min-height: 360px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .intro-typing {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: min(900px, 88vw);
+            color: var(--text);
+            font-family: var(--font-heading);
+            font-size: clamp(1.45rem, 3vw, 3rem);
+            font-weight: 300;
+            line-height: 1.35;
+            text-align: left;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            transform: translate(-50%, -50%);
+            transition: opacity 0.75s var(--ease), filter 0.75s var(--ease), transform 0.75s var(--ease), visibility 0.75s var(--ease);
+        }
+        .intro-typing .mono-italic {
+            opacity: 0;
+            filter: blur(10px);
+            transform: scale(0.8);
+            transition: opacity 0.45s var(--ease), filter 0.45s var(--ease), transform 0.45s var(--ease);
+        }
+        .intro-typing .mono-italic.word-visible {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+        .intro-brand {
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateY(18px) scale(1.04);
+            transition: opacity 0.8s var(--ease), filter 0.8s var(--ease), transform 0.8s var(--ease);
+        }
+        .intro-logo-stage {
+            position: relative;
+            display: grid;
+            min-width: min(94vw, 1200px);
+            place-items: center;
+        }
+        .intro-ru-words,
+        .intro-final-logo {
+            grid-area: 1 / 1;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+        .intro-ru-words {
+            gap: clamp(0.35rem, 1.2vw, 1rem);
+        }
+        .intro-ru-word {
+            display: inline-block;
+            opacity: 0;
+            filter: blur(16px);
+            transform: translateY(18px) scale(1.04);
+        }
+        .intro-final-logo {
+            opacity: 0;
+            filter: blur(12px);
+            pointer-events: none;
+            transform: scale(1.04);
+        }
+        .intro-brand .logo-sub {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(8px);
+        }
+        .intro-brand.words-visible {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0) scale(1);
+        }
+        .intro-brand.words-visible .intro-ru-word:first-child {
+            animation: word-smoke-in 0.8s var(--ease) both;
+        }
+        .intro-brand.words-visible .intro-ru-word:last-child {
+            animation: word-smoke-in 0.8s var(--ease) 0.16s both;
+        }
+        .intro-brand.logo-morph .intro-ru-words {
+            animation: words-smoke-out 0.6s ease-in both;
+        }
+        .intro-brand.logo-morph .intro-final-logo {
+            animation: final-logo-in 0.85s var(--ease) 0.24s both;
+        }
+        .intro-brand.logo-morph .logo-sub {
+            animation: final-logo-in 0.65s var(--ease) 0.42s both;
+        }
+        .intro-brand .logo-brand {
+            font-size: clamp(2rem, 7vw, 5.7rem);
+            letter-spacing: 0.05em;
+        }
+        .intro-brand .intro-ru-words.logo-brand {
+            flex-wrap: wrap;
+            row-gap: 0.35rem;
+            font-size: clamp(1.15rem, 4.6vw, 4.9rem);
+            letter-spacing: 0.03em;
+        }
+        .intro-brand .logo-sub {
+            margin-top: 1rem;
+            font-size: clamp(0.58rem, 1.3vw, 0.9rem);
+        }
+        .intro-real-text,
+        .intro-izm-text { display: inline-block; }
+        #start-btn-intro {
+            margin-top: 2.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px) scale(0.98);
+            transition: opacity 0.55s var(--ease), visibility 0.55s var(--ease), transform 0.55s var(--ease);
+        }
+        #intro-logo.typing-finished .intro-typing,
+        #intro-logo.intro-ready .intro-typing {
+            opacity: 0;
+            visibility: hidden;
+            filter: blur(15px);
+            transform: translate(-50%, calc(-50% - 24px)) scale(1.08);
+        }
+        #intro-logo.intro-ready #start-btn-intro {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        @keyframes logo-real-in {
+            from { opacity: 0; transform: translateX(-42px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes logo-izm-in {
+            from { opacity: 0; transform: translateX(42px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes word-smoke-in {
+            from { opacity: 0; filter: blur(16px); transform: translateY(18px) scale(1.04); }
+            to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+        }
+        @keyframes words-smoke-out {
+            from { opacity: 1; filter: blur(0); transform: scale(1); }
+            to { opacity: 0; filter: blur(16px); transform: scale(1.08); }
+        }
+        @keyframes final-logo-in {
+            from { opacity: 0; filter: blur(12px); transform: translateY(8px) scale(1.04); }
+            to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+        }
+        body.intro-finished #preloader-bg,
+        body.intro-finished #intro-logo {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        header {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: calc(100% - 8vw);
+            max-width: 1600px;
+            min-height: 60px;
+            padding: 0.6rem 2rem;
+            border-radius: 40px;
+            transform: translateX(-50%);
+        }
+        header.is-scrolled { min-height: 52px; }
+        .logo-brand { display: inline-flex; align-items: baseline; font-size: 1.05rem; letter-spacing: 0.08em; line-height: 1; }
+        .logo-real { color: var(--text); font-weight: 600; }
+        .logo-sub { display: block; margin-top: 4px; color: var(--text-dim); font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; }
+        .real-logo { display: flex; flex-direction: column; align-items: flex-start; }
+        .nav-links { display: flex; align-items: center; gap: 2.6rem; }
+        .nav-links a {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.25s var(--ease);
+        }
+        .nav-links a:hover { color: var(--text-dim); }
+        .hamburger {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--text);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .hamburger span {
+            width: 22px;
+            height: 2px;
+            border-radius: 2px;
+            background: currentColor;
+            transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+        }
+        .hamburger.active span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        .hero {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+            padding: 8rem 0 4rem;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 18% 30%, rgba(0, 255, 255, 0.09), transparent 50%),
+                radial-gradient(ellipse at 82% 70%, rgba(176, 38, 255, 0.1), transparent 50%),
+                linear-gradient(180deg, #09090b 0%, #0c0c10 100%);
+        }
+        .hero-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse at center, black 28%, transparent 82%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 28%, transparent 82%);
+        }
+        .hero-grid {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(420px, 0.95fr);
+            gap: 4rem;
+            align-items: center;
+            width: var(--container);
+            margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+            padding: 0.42rem 0.9rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 40px;
+            background: rgba(0, 255, 255, 0.05);
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            font-size: 0.64rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+        .hero-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--neon-blue);
+            box-shadow: 0 0 8px var(--neon-blue);
+            animation: pulse-dot 2s infinite ease-in-out;
+        }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.42; transform: scale(0.84); } }
+        .hero-title { max-width: 860px; margin-bottom: 2rem; }
+        .hero-subtitle {
+            max-width: 580px;
+            margin-bottom: 2.5rem;
+            color: var(--text-dim);
+            font-size: clamp(0.96rem, 1.25vw, 1.13rem);
+            font-weight: 300;
+            line-height: 1.65;
+        }
+        .hero-cta-group { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+        .tv-mockup-wrapper { position: relative; }
+        .tv-mockup {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            padding: 14px;
+            border-radius: 14px;
+            background: #1a1a1d;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 30px 80px -20px rgba(0, 0, 0, 0.8),
+                0 0 60px rgba(0, 255, 255, 0.06),
+                0 0 100px rgba(176, 38, 255, 0.04);
+            transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+        }
+        .tv-mockup:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 0 0 1px rgba(0, 255, 255, 0.22),
+                0 40px 100px -20px rgba(0, 0, 0, 0.9),
+                0 0 86px rgba(0, 255, 255, 0.16),
+                0 0 136px rgba(176, 38, 255, 0.1);
+        }
+        .tv-mockup::after {
+            content: "";
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--neon-blue);
+            box-shadow: 0 0 6px var(--neon-blue);
+            transform: translateX(-50%);
+            animation: pulse-dot 2.5s infinite ease-in-out;
+        }
+        .tv-screen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 5px;
+            background: #000000;
+        }
+        .tv-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.02);
+            transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
+        }
+        .tv-mockup:hover .tv-screen img { transform: scale(1.06); opacity: 0.86; }
+        .tv-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            display: grid;
+            place-items: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.46);
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translate(-50%, -50%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+            transition: transform 0.35s var(--ease), background 0.35s var(--ease), border-color 0.35s var(--ease);
+        }
+        .tv-play-btn svg { width: 28px; height: 28px; margin-left: 4px; fill: currentColor; }
+        .tv-mockup:hover .tv-play-btn {
+            transform: translate(-50%, -50%) scale(1.06);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.82);
+        }
+        .tv-specs {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.8rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .tv-specs strong { color: var(--neon-blue); font-weight: 500; }
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transform: translateX(-50%);
+        }
+        .scroll-indicator-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, var(--text-dim));
+            animation: scroll-pulse 2s infinite ease-in-out;
+        }
+        @keyframes scroll-pulse { 0%, 100% { opacity: 0.3; transform: scaleY(1); transform-origin: top; } 50% { opacity: 1; transform: scaleY(1.2); } }
+
+        .tv-modal,
+        .tour-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: rgba(9, 9, 11, 0.95);
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
+        }
+        .tv-modal.active,
+        .tour-modal.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+        .tv-modal-content {
+            position: relative;
+            width: min(90vw, 1400px);
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000000;
+            box-shadow: 0 0 80px rgba(0, 255, 255, 0.2);
+            transform: scale(0.96);
+            transition: transform 0.35s var(--ease);
+        }
+        .tv-modal.active .tv-modal-content { transform: scale(1); }
+        .tv-modal-content iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            z-index: 10600;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+        .modal-close:hover { background: rgba(0, 255, 255, 0.13); }
+
+        .projects { position: relative; padding: 8rem 0; overflow: hidden; background: var(--bg); }
+        .projects-pin-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+            width: var(--container);
+            margin: 0 auto 3rem;
+        }
+        .projects-pin-header h2 { max-width: 920px; }
+        .projects-track-wrapper {
+            position: relative;
+            width: 100vw;
+        }
+        .projects-grid {
+            display: flex;
+            gap: 2vw;
+            width: 100%;
+            overflow-x: auto;
+            padding: 0 4vw 2rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+        .projects-grid::-webkit-scrollbar { display: none; }
+        .project-card {
+            position: relative;
+            display: flex;
+            flex: 0 0 clamp(280px, 24vw, 420px);
+            height: min(60vh, 600px);
+            min-height: 420px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: var(--surface);
+            text-decoration: none;
+            scroll-snap-align: center;
+        }
+        .project-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent 56%);
+            opacity: 0.88;
+            transition: opacity 0.35s var(--ease);
+        }
+        .project-card:hover::after { opacity: 1; }
+        .img-wrapper { position: absolute; inset: 0; overflow: hidden; }
+        .project-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.82;
+            transition: transform 0.6s var(--ease), opacity 0.35s var(--ease);
+        }
+        .project-card:hover img { transform: scale(1.06); opacity: 1; }
+        .project-info {
+            position: relative;
+            z-index: 2;
+            align-self: flex-end;
+            width: 100%;
+            padding: 1.5rem;
+            color: #ffffff;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.8);
+            transform: translateY(10px);
+            opacity: 0.86;
+            transition: transform 0.35s var(--ease), opacity 0.35s var(--ease);
+        }
+        .project-card:hover .project-info { transform: translateY(0); opacity: 1; }
+        .project-info h3 {
+            margin-bottom: 0.35rem;
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .project-info p {
+            color: #e5e7eb;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .all-projects-card {
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 255, 255, 0.08), transparent 45%),
+                radial-gradient(ellipse at 80% 80%, rgba(176, 38, 255, 0.09), transparent 45%),
+                var(--surface);
+        }
+        .all-projects-card::after { display: none; }
+        .all-projects-text {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            z-index: 10;
+            display: grid;
+            place-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+        .slider-arrow.prev { left: 2vw; }
+        .slider-arrow.next { right: 2vw; }
+        .slider-arrow svg { width: 22px; height: 22px; }
+
+        .case-study,
+        .services,
+        .showcase,
+        .process,
+        .clients,
+        .faq,
+        .contact-form-section {
+            padding: 8rem 0;
+            border-bottom: 1px solid rgba(156, 163, 175, 0.1);
+        }
+        .case-study { position: relative; overflow: hidden; }
+        .case-study-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .case-study-tag {
+            display: inline-block;
+            padding: 0.32rem 0.7rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .case-study-title h2 { max-width: 900px; margin-top: 1rem; }
+        .case-study-meta {
+            display: flex;
+            min-width: 220px;
+            flex-direction: column;
+            gap: 0.45rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+        }
+        .case-study-meta strong { display: block; color: var(--text); font-weight: 500; }
+        .case-study-hero {
+            width: 100%;
+            aspect-ratio: 21 / 9;
+            overflow: hidden;
+            margin-bottom: 4rem;
+            border-radius: 8px;
+            background: var(--surface);
+        }
+        .case-study-hero img { width: 100%; height: 100%; object-fit: cover; }
+        .case-study-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+        .case-block h4 {
+            margin-bottom: 1rem;
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .case-block h3 {
+            margin-bottom: 1rem;
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            font-weight: 300;
+            line-height: 1.3;
+        }
+        .case-block p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.68;
+        }
+        .carousel-wrapper {
+            position: relative;
+            width: min(1500px, 100%);
+            margin: 0 auto;
+            padding: 0 3.25rem;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            z-index: 20;
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            color: #ffffff;
+            transform: translateY(-50%);
+        }
+        .carousel-btn[disabled] {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .left-btn { left: 0; }
+        .right-btn { right: 0; }
+        .case-process-grid {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 0.25rem 0 1.25rem;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            user-select: none;
+        }
+        .case-process-grid::-webkit-scrollbar { display: none; }
+        .case-process-grid.dragging {
+            cursor: grabbing !important;
+            scroll-behavior: auto;
+            scroll-snap-type: none;
+        }
+        .case-process-item {
+            position: relative;
+            flex: 0 0 calc((100% - 3rem) / 4);
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: var(--surface);
+            scroll-snap-align: center;
+            transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+        }
+        .case-process-item:focus-visible {
+            outline: 2px solid var(--neon-blue);
+            outline-offset: 4px;
+        }
+        .case-process-item:hover {
+            z-index: 2;
+            transform: translateY(-6px);
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.48), 0 0 20px rgba(0, 255, 255, 0.12);
+        }
+        .case-process-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.66;
+            transition: transform 0.6s var(--ease), opacity 0.4s var(--ease);
+        }
+        .case-process-item:hover img { transform: scale(1.08); opacity: 1; }
+        .stage-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.32rem 0.6rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 3px;
+            background: rgba(9, 9, 11, 0.8);
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            backdrop-filter: blur(8px);
+        }
+        .case-metrics-modern {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6vw;
+            margin-top: 2rem;
+            padding: 5rem 0;
+            border-top: 1px solid rgba(156, 163, 175, 0.15);
+            border-bottom: 1px solid rgba(156, 163, 175, 0.15);
+        }
+        .metrics-grid-left {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem 4vw;
+            text-align: center;
+        }
+        .metric-value,
+        .metric-value-huge {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            font-family: var(--font-heading);
+            line-height: 1;
+        }
+        .metric-value { margin-bottom: 0.5rem; font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 300; }
+        .metric-label,
+        .metric-citation {
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .metrics-divider {
+            width: 1px;
+            height: 160px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 255, 0.4), transparent);
+        }
+        .metric-featured-right {
+            max-width: 520px;
+            text-align: left;
+        }
+        .metric-value-huge {
+            margin-bottom: 1.2rem;
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 400;
+        }
+        .metric-text-featured {
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-size: 1.04rem;
+            font-weight: 500;
+            line-height: 1.62;
+        }
+
+        .services-layout {
+            display: grid;
+            grid-template-columns: minmax(460px, 0.95fr) minmax(0, 1.55fr);
+            gap: 4rem;
+            align-items: start;
+        }
+        .services-title { min-width: 0; }
+        .services-title h2 {
+            max-width: 680px;
+            font-size: clamp(2rem, 3.1vw, 3.45rem);
+            overflow-wrap: break-word;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem 2rem;
+            min-width: 0;
+        }
+        .service-item {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .service-icon { width: 30px; height: 30px; color: var(--text); opacity: 0.58; }
+        .service-item .num { color: var(--text-dim); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+        .service-item h4 { font-size: 1.06rem; font-weight: 400; line-height: 1.35; }
+        .service-item p { color: var(--text-dim); font-size: 0.85rem; font-weight: 300; line-height: 1.62; }
+
+        .showcase-banner {
+            position: relative;
+            display: flex;
+            min-height: 60vh;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            padding: 4rem;
+            border-radius: 8px;
+            background: #111111;
+        }
+        .showcase-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.18;
+            filter: grayscale(100%);
+        }
+        .showcase-content { position: relative; z-index: 1; max-width: 560px; }
+        .showcase-content p {
+            margin: 1.5rem 0 2.5rem;
+            color: #e5e7eb;
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        .ue-logo {
+            position: absolute;
+            right: 4rem;
+            bottom: 4rem;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .ue-logo span {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        .process-timeline {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        .process-step {
+            position: relative;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(156, 163, 175, 0.2);
+        }
+        .process-step::before {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: 0;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--text);
+            transition: transform 0.25s var(--ease), background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+        }
+        .process-step:hover::before {
+            transform: scale(2);
+            background: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        .process-step .num { display: block; margin-bottom: 1rem; color: var(--text-dim); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+        .process-step h4 { margin-bottom: 0.55rem; font-size: 1.06rem; font-weight: 400; }
+        .process-step p { color: var(--text-dim); font-size: 0.85rem; font-weight: 300; line-height: 1.62; }
+
+        .clients { text-align: center; }
+        .clients-header { margin-bottom: 4rem; }
+        .clients-header p { margin-top: 1rem; color: var(--text-dim); }
+        .marquee-container {
+            position: relative;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            overflow: hidden;
+            padding: 3rem 0;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+        .marquee-track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            animation: scroll-marquee 30s linear infinite;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+        @keyframes scroll-marquee { to { transform: translateX(-50%); } }
+        .marquee-item {
+            display: flex;
+            flex: 0 0 260px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding-right: 6rem;
+        }
+        .marquee-item img {
+            width: 100%;
+            height: 60px;
+            object-fit: contain;
+            opacity: 0.42;
+            filter: grayscale(100%);
+            transition: opacity 0.35s var(--ease), filter 0.35s var(--ease), transform 0.35s var(--ease);
+        }
+        .marquee-item:hover img { opacity: 1; filter: grayscale(0%); transform: scale(1.08); }
+        .client-country {
+            color: rgba(156, 163, 175, 0.68);
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .marquee-item.brand-text {
+            height: 60px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        .faq-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+            gap: 5rem;
+            align-items: start;
+        }
+        .faq-side p {
+            max-width: 520px;
+            margin: 1.5rem 0 2rem;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        .faq-list { display: flex; flex-direction: column; }
+        .faq-item {
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .faq-item:first-child { border-top: 1px solid var(--glass-border); }
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            width: 100%;
+            min-height: 74px;
+            padding: 1.35rem 0;
+            background: transparent;
+            color: var(--text);
+            text-align: left;
+        }
+        .faq-question span:first-child {
+            font-family: var(--font-heading);
+            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            font-weight: 400;
+        }
+        .faq-toggle {
+            flex: 0 0 24px;
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            text-align: center;
+            transition: transform 0.25s var(--ease);
+        }
+        .faq-item.active .faq-toggle { transform: rotate(45deg); }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            line-height: 1.7;
+            transition: max-height 0.35s var(--ease);
+        }
+        .faq-answer-inner { padding: 0 0 1.35rem; }
+
+        .contact-form-section { position: relative; overflow: hidden; }
+        .contact-form-section::before {
+            content: "";
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.04), transparent 60%);
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+        .contact-form-layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+            gap: 5rem;
+        }
+        .contact-form-info p {
+            margin: 1.5rem 0 3rem;
+            color: var(--text-dim);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        .contact-direct {
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        .contact-direct-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+        .contact-direct-item strong { color: var(--text); font-weight: 500; }
+        .contact-direct-item svg { flex: 0 0 16px; width: 16px; height: 16px; color: var(--neon-blue); }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .form-field { display: flex; flex-direction: column; gap: 0.55rem; }
+        .form-field label {
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .required { color: var(--neon-blue); }
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            outline: none;
+            background: var(--glass-bg);
+            color: var(--text);
+            padding: 0.92rem 1rem;
+            font-size: 0.95rem;
+            transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+        }
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        }
+        .form-field textarea { min-height: 126px; resize: vertical; }
+        .form-field select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 2.5rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+        .form-field select option { background: var(--surface); color: var(--text); }
+        .form-privacy {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-top: -0.5rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            line-height: 1.5;
+        }
+        .form-privacy input {
+            flex: 0 0 15px;
+            width: 15px;
+            height: 15px;
+            margin-top: 2px;
+            accent-color: var(--neon-blue);
+        }
+        .form-privacy a { color: var(--neon-blue); text-decoration: underline; }
+        .form-submit {
+            width: 100%;
+            min-height: 54px;
+            margin-top: 0.5rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: #09090b;
+            font-weight: 600;
+        }
+        .form-submit[disabled] { opacity: 0.68; pointer-events: none; }
+        .form-status {
+            min-height: 1.2rem;
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .tour-modal {
+            z-index: 10550;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .tour-container {
+            width: min(95vw, 1920px);
+            height: min(82vh, 1080px);
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000000;
+            box-shadow: 0 0 80px rgba(0, 255, 255, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+        #panorama { width: 100%; height: 100%; }
+        .tour-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.7rem;
+            width: min(95vw, 1600px);
+        }
+        .tour-btn {
+            border-radius: 40px;
+            padding: 0.82rem 1.25rem;
+            color: #ffffff;
+            font-size: 0.78rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .tour-btn.active { border-color: var(--neon-blue); box-shadow: 0 0 18px rgba(0, 255, 255, 0.22); }
+        .tour-error {
+            display: none;
+            padding: 2rem;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+        .cookie-banner {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            z-index: 10800;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: min(400px, calc(100vw - 2rem));
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(9, 9, 11, 0.85);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 255, 0.05);
+            color: var(--text-dim);
+            backdrop-filter: blur(15px);
+            transform: translateY(150%);
+            transition: transform 0.45s var(--ease);
+        }
+        .cookie-banner.show { transform: translateY(0); }
+        .cookie-text { font-size: 0.8rem; line-height: 1.5; }
+        .cookie-buttons { display: flex; gap: 0.8rem; }
+        .btn-cookie {
+            padding: 0.6rem 1.05rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+        }
+        .btn-accept { border: 1px solid var(--neon-blue); background: rgba(0, 255, 255, 0.1); color: var(--neon-blue); }
+        .btn-decline { border: 1px solid rgba(255, 255, 255, 0.12); background: transparent; color: var(--text-dim); }
+        .btn-accept:hover { background: rgba(0, 255, 255, 0.2); }
+        .btn-decline:hover { border-color: rgba(255, 255, 255, 0.3); color: #ffffff; }
+
+        footer {
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            background: #050505;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: stretch;
+        }
+        .founder-photo-large {
+            width: 50%;
+            max-width: 280px;
+            aspect-ratio: 3 / 4;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #1c1c1f;
+            filter: grayscale(100%);
+            transition: filter 0.8s var(--ease);
+        }
+        .footer-left:hover .founder-photo-large { filter: grayscale(0%); }
+        .founder-info-large { margin-top: 1.5rem; }
+        .founder-info-large h4 { margin-bottom: 0.3rem; font-size: 1.3rem; font-weight: 400; }
+        .founder-info-large span { color: var(--neon-blue); font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; }
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .footer-right-top { margin-bottom: 4rem; }
+        .footer-right-top h2 { margin-bottom: 2rem; font-size: clamp(2.5rem, 5vw, 4.5rem); }
+        .footer-right-top p {
+            max-width: 92%;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 1.05rem;
+            line-height: 1.64;
+        }
+        .footer-right-bottom h3 {
+            margin-bottom: 2rem;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 300;
+            line-height: 1.2;
+        }
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.65);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-top: 8rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .socials { display: flex; flex-wrap: wrap; gap: 1.4rem; }
+        .socials a { transition: color 0.25s var(--ease); }
+        .socials a:hover { color: var(--neon-blue); }
+
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+        }
+        .reveal-up.is-visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1180px) {
+            .hero-grid { grid-template-columns: 1fr; padding-top: 4rem; }
+            .tv-mockup-wrapper { width: min(900px, 100%); margin: 0 auto; }
+            .services-layout { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .process-timeline { grid-template-columns: repeat(2, 1fr); }
+            .carousel-wrapper { width: 100%; padding: 0 3.25rem; }
+            .case-process-item { flex-basis: calc((100% - 2rem) / 3); }
+        }
+
+        @media (max-width: 900px) {
+            header { top: 1rem; width: 92vw; padding: 0.7rem 1.1rem; }
+            .hamburger { display: flex; }
+            .nav-links {
+                position: fixed;
+                inset: 0;
+                z-index: -1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 2rem;
+                background: rgba(9, 9, 11, 0.96);
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+                backdrop-filter: blur(20px);
+            }
+            .nav-links.active { opacity: 1; visibility: visible; pointer-events: all; }
+            .nav-links a { font-size: 1.35rem; }
+            .hero { min-height: auto; padding: 7rem 0 4rem; }
+            .scroll-indicator { display: none; }
+            .projects-pin-header,
+            .case-study-header,
+            .case-study-grid,
+            .faq-layout,
+            .contact-form-layout,
+            .footer-grid {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .case-study-header { display: grid; }
+            .case-study-grid,
+            .faq-layout,
+            .contact-form-layout,
+            .footer-grid { display: grid; gap: 3rem; }
+            .case-metrics-modern { flex-direction: column; gap: 3rem; text-align: center; }
+            .metrics-divider {
+                width: 120px;
+                height: 1px;
+                background: linear-gradient(to right, transparent, rgba(0, 255, 255, 0.4), transparent);
+            }
+            .metric-featured-right { text-align: center; }
+            .showcase-banner { padding: 2rem; min-height: 52vh; }
+            .ue-logo { right: 2rem; bottom: 2rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .founder-photo-large { width: 70%; max-width: 360px; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; }
+            .case-process-item { flex-basis: calc((100% - 1rem) / 2); }
+        }
+
+        @media (max-width: 640px) {
+            :root { --container: min(100vw - 8vw, 1600px); }
+            .hero-title { font-size: clamp(2rem, 9vw, 3rem); }
+            .hero-badge { align-items: flex-start; white-space: normal; line-height: 1.5; }
+            .hero-cta-group .btn-outline { width: 100%; }
+            .tv-mockup { padding: 8px; }
+            .tv-specs { flex-direction: column; gap: 0.45rem; }
+            .project-card { flex-basis: 78vw; min-height: 390px; }
+            .slider-arrow { display: none; }
+            .case-study,
+            .services,
+            .showcase,
+            .process,
+            .clients,
+            .faq,
+            .contact-form-section { padding: 5rem 0; }
+            .case-study-hero { aspect-ratio: 4 / 3; }
+            .carousel-wrapper { padding: 0 3rem; }
+            .carousel-btn {
+                display: grid;
+                width: 40px;
+                height: 40px;
+            }
+            .case-process-item { flex-basis: min(68vw, 280px); }
+            .services-grid { grid-template-columns: 1fr; }
+            .process-timeline { grid-template-columns: 1fr; }
+            .metrics-grid-left { grid-template-columns: 1fr 1fr; gap: 2rem 1.5rem; }
+            .modal-close { top: 1rem; right: 1rem; }
+            .tv-modal,
+            .tour-modal { padding: 1rem; }
+            .tour-container { height: 68vh; }
+            .tour-btn { flex: 1 1 auto; min-width: 130px; padding-inline: 0.8rem; }
+            .cookie-banner { right: 1rem; bottom: 1rem; }
+            #trail-container,
+            .custom-cursor { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal-up { opacity: 1; transform: none; }
+        }
+    </style>
+    <noscript>
+        <style>
+            #preloader-bg, #intro-logo { display: none !important; }
+            body { overflow: auto !important; height: auto !important; }
+        </style>
+    </noscript>
+</head>
+<body class="is-locked">
+    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+
+    <div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie">
+        <div class="cookie-text">Мы используем файлы cookie для аналитики и улучшения работы сайта. Вы можете согласиться или отказаться.</div>
+        <div class="cookie-buttons">
+            <button id="btn-accept-cookie" class="btn-cookie btn-accept hover-target" type="button">Принять</button>
+            <button id="btn-decline-cookie" class="btn-cookie btn-decline hover-target" type="button">Отказаться</button>
+        </div>
+    </div>
+
+    <div class="custom-cursor" aria-hidden="true"></div>
+    <div id="trail-container" aria-hidden="true"></div>
+    <div class="noise-overlay" aria-hidden="true"></div>
+    <div id="preloader-bg" aria-hidden="true"></div>
+
+    <div id="intro-logo" role="dialog" aria-label="REALIZM">
+        <div class="intro-panel">
+            <div id="preloader-text" class="intro-typing" aria-live="polite">
+                <span id="type1-ru"></span><span id="type2-ru" class="mono-italic">восприятие</span><span id="type3-ru"></span>
+            </div>
+            <div id="intro-brand" class="intro-brand" aria-label="REALIZM">
+                <div class="intro-logo-stage">
+                    <div class="intro-ru-words logo-brand" aria-hidden="true">
+                        <span class="logo-real intro-ru-word">РЕАЛЬНОСТЬ</span>
+                        <span class="gradient-text-anim intro-ru-word">ИЗМЕРЕНИЕ</span>
+                    </div>
+                    <div class="intro-final-logo logo-brand">
+                        <span class="logo-real intro-real-text">REAL</span><span class="gradient-text-anim intro-izm-text">IZM</span>
+                    </div>
+                </div>
+                <span class="logo-sub">СТУДИЯ 3D ВИЗУАЛИЗАЦИИ</span>
+            </div>
+            <button id="start-btn-intro" class="btn-outline btn-glow magnetic hover-target" type="button">СТАРТ</button>
+        </div>
+    </div>
+
+    <header class="ui-element">
+        <a href="#top" class="real-logo magnetic hover-target" aria-label="REALIZM - главная">
+            <span class="logo-brand"><span class="logo-real">REAL</span><span class="gradient-text-anim">IZM</span></span>
+        </a>
+
+        <nav class="nav-links" id="main-nav" aria-label="Основная навигация">
+            <a href="#work" class="magnetic hover-target nav-anchor">Работы</a>
+            <a href="#case" class="magnetic hover-target nav-anchor">Кейс</a>
+            <a href="#services" class="magnetic hover-target nav-anchor">Услуги</a>
+            <a href="#about" class="magnetic hover-target nav-anchor">О нас</a>
+            <a href="#contact" class="magnetic hover-target nav-anchor">Контакты</a>
+        </nav>
+
+        <button class="hamburger hover-target" id="mobile-menu-btn" type="button" aria-label="Открыть меню" aria-controls="main-nav" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <main id="main-content">
+        <section id="top" class="hero">
+            <div class="hero-bg" aria-hidden="true"></div>
+            <div class="hero-grid">
+                <div class="hero-content ui-element reveal-up">
+                    <div class="hero-badge">Архитектурная визуализация · Unreal Engine 5 · Real-time</div>
+                    <h1 class="hero-title">3D визуализация архитектуры и интерактив на <span class="mono-italic">Unreal Engine 5</span></h1>
+                    <p class="hero-subtitle">Мы создаём восприятие пространства до его строительства. Кинематографические рендеры и real-time среды для архитекторов и девелоперов, которым важна точность.</p>
+                    <div class="hero-cta-group">
+                        <a href="#contact" class="btn-outline btn-glow magnetic hover-target nav-anchor">Обсудить проект <span aria-hidden="true">→</span></a>
+                        <a href="#work" class="btn-outline magnetic hover-target nav-anchor">Смотреть работы</a>
+                    </div>
+                </div>
+
+                <div class="tv-mockup-wrapper ui-element reveal-up">
+                    <button class="tv-mockup hover-target" id="tv-open" type="button" aria-label="Открыть демо-видео">
+                        <span class="tv-screen">
+                            <img src="assets/img/yt-poster.webp" alt="Демонстрация 3D визуализации REALIZM" fetchpriority="high">
+                            <span class="tv-play-btn" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+                            </span>
+                        </span>
+                    </button>
+                    <div class="tv-specs">
+                        <span><strong>● LIVE</strong> Демо-плейлист</span>
+                        <span>Клик - развернуть</span>
+                        <span><strong>UE5</strong> · 4K · 60FPS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-indicator ui-element" aria-hidden="true">
+                <span>Скролл</span>
+                <div class="scroll-indicator-line"></div>
+            </div>
+        </section>
+
+        <div class="tv-modal" id="tv-modal" aria-hidden="true">
+            <button class="modal-close hover-target" id="tv-close" type="button" aria-label="Закрыть видео">×</button>
+            <div class="tv-modal-content">
+                <iframe id="modal-player" title="REALIZM video" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <section id="work" class="projects">
+            <div class="projects-pin-header reveal-up">
+                <div>
+                    <span class="section-label">Избранные проекты / 01</span>
+                    <h2>Архитектура, которую можно <span class="mono-italic">прочувствовать</span></h2>
+                </div>
+                <a href="#all-projects" class="btn-text magnetic hover-target nav-anchor">Все проекты <span aria-hidden="true">→</span></a>
+            </div>
+
+            <div id="all-projects" class="projects-track-wrapper">
+                <button class="slider-arrow prev magnetic hover-target" type="button" aria-label="Предыдущие проекты">
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+
+                <div class="projects-grid" id="projects-grid" aria-label="Проекты">
+                    <a href="#contact" class="project-card hover-target nav-anchor">
+                        <div class="img-wrapper"><img src="assets/projects/project-01.webp" loading="lazy" alt="3D визуализация жилого комплекса в Дубае"></div>
+                        <div class="project-info"><h3>Жилой комплекс в Дубае</h3><p>Интерактивный проект ВЭБ</p></div>
+                    </a>
+                    <a href="#contact" class="project-card hover-target nav-anchor">
+                        <div class="img-wrapper"><img src="assets/projects/project-02.webp" loading="lazy" alt="3D визуализация премиального поселка Provance"></div>
+                        <div class="project-info"><h3>Жилой комплекс Provance</h3><p>Интерактивный проект</p></div>
+                    </a>
+                    <a href="#contact" class="project-card hover-target nav-anchor">
+                        <div class="img-wrapper"><img src="assets/projects/project-03.webp" loading="lazy" alt="3D визуализация жилого комплекса в Москве"></div>
+                        <div class="project-info"><h3>Жилой комплекс в Москве</h3><p>Интерактивный проект</p></div>
+                    </a>
+                    <a href="#contact" class="project-card hover-target nav-anchor">
+                        <div class="img-wrapper"><img src="assets/projects/project-04.webp" loading="lazy" alt="Вилла на Пхукете"></div>
+                        <div class="project-info"><h3>Вилла на Пхукете</h3><p>Интерактивный проект</p></div>
+                    </a>
+                    <a href="#contact" class="project-card all-projects-card magnetic hover-target nav-anchor">
+                        <div class="all-projects-text">Обсудить похожий проект →</div>
+                    </a>
+                </div>
+
+                <button class="slider-arrow next magnetic hover-target" type="button" aria-label="Следующие проекты">
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+        </section>
+
+        <section id="case" class="case-study container">
+            <div class="case-study-header reveal-up">
+                <div>
+                    <span class="case-study-tag">CASE STUDY / DUBAI</span>
+                    <div class="case-study-title">
+                        <h2>ARTHOUSE Residences - от 3D-макета в SketchUp до интерактивного проекта на веб-сайте</h2>
+                    </div>
+                </div>
+                <div class="case-study-meta">
+                    <div><strong>Клиент:</strong> Cle Dor Developments, UAE</div>
+                    <div><strong>Срок:</strong> 4 недели</div>
+                    <div><strong>Стек:</strong> UE5 · 3ds Max</div>
+                </div>
+            </div>
+
+            <div class="case-study-hero reveal-up">
+                <img src="assets/case/arthouse-hero.webp" alt="3D визуализация жилого комплекса в Дубае на Unreal Engine 5" loading="lazy">
+            </div>
+
+            <div class="case-study-grid reveal-up">
+                <div class="case-block">
+                    <h4>Задача</h4>
+                    <h3>Превратить базовую SketchUp-модель в мощный инструмент продаж</h3>
+                    <p>Клиент передал нам архитектурный проект жилого комплекса в формате SketchUp. Перед нами стояла задача выйти за рамки стандартной статики: требовалось создать реалистичный, захватывающий синематик и разработать полноценный интерактивный 3D-проект для веб-сайта.</p>
+                </div>
+                <div class="case-block">
+                    <h4>Подход</h4>
+                    <h3>Параллельный пайплайн: промо-синематик + веб-интеграция</h3>
+                    <p>Мы запустили работу в два параллельных потока. Первый - режиссура и рендер кинематографичного рекламного видеоролика. Второй - оптимизация сцены для интерактивного рендера с последующей frontend-вёрсткой и интеграцией решения на сайт заказчика.</p>
+                </div>
+            </div>
+
+            <h4 class="case-block reveal-up" style="margin-bottom: 1.5rem;">Процесс</h4>
+            <div class="carousel-wrapper reveal-up">
+                <button id="btn-prev" class="carousel-btn left-btn hover-target" type="button" aria-label="Назад">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"></path></svg>
+                </button>
+                <button id="btn-next" class="carousel-btn right-btn hover-target" type="button" aria-label="Вперёд">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"></path></svg>
+                </button>
+                <div class="case-process-grid" id="case-process-grid">
+                    <div class="case-process-item hover-target"><img src="assets/case/stage-01-concept.webp" alt="Концепт проекта" loading="lazy"><span class="stage-label">01 / Концепт</span></div>
+                    <div class="case-process-item hover-target"><img src="assets/case/stage-02-scene.webp" alt="Сборка сцены" loading="lazy"><span class="stage-label">02 / Сборка сцены</span></div>
+                    <div class="case-process-item hover-target"><img src="assets/case/stage-03-env.webp" alt="Сборка окружения" loading="lazy"><span class="stage-label">03 / Окружение</span></div>
+                    <div class="case-process-item hover-target"><img src="assets/case/stage-04-cinematic.webp" alt="Создание синематика" loading="lazy"><span class="stage-label">04 / Синематик</span></div>
+                    <div class="case-process-item hover-target"><img src="assets/case/stage-05-web.webp" alt="Создание веб-сайта" loading="lazy"><span class="stage-label">05 / Веб-сайт</span></div>
+                </div>
+            </div>
+
+            <div class="case-metrics-modern reveal-up">
+                <div class="metrics-grid-left">
+                    <div><div class="metric-value">120</div><div class="metric-label">Резиденций</div></div>
+                    <div><div class="metric-value">60<span style="font-size: 0.5em;"> FPS</span></div><div class="metric-label">Web-версия</div></div>
+                    <div><div class="metric-value">4<span style="font-size: 0.5em;"> нед</span></div><div class="metric-label">До релиза</div></div>
+                    <div><div class="metric-value">UE5</div><div class="metric-label">Стек</div></div>
+                </div>
+                <div class="metrics-divider" aria-hidden="true"></div>
+                <div class="metric-featured-right">
+                    <div class="metric-value-huge">100%</div>
+                    <div class="metric-text-featured">ЖК закрыл продажи на старте. Наша 3D-визуализация была основным маркетинговым материалом кампании.</div>
+                    <div class="metric-citation">- Cle Dor Developments, 2026</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services container">
+            <span class="section-label reveal-up">Услуги / 02</span>
+            <div class="services-layout">
+                <div class="services-title reveal-up">
+                    <h2>Комплексные решения для визуализации и презентации</h2>
+                </div>
+                <div class="services-grid">
+                    <article class="service-item reveal-up">
+                        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                        <span class="num">01</span>
+                        <h4>3D Моделирование<br>и Визуализация</h4>
+                        <p>Создание точных 3D-моделей по чертежам и фотореалистичные рендеры. Передаем архитектуру, свет и материалы для убедительных презентаций.</p>
+                    </article>
+                    <article class="service-item reveal-up">
+                        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M10 8l6 4-6 4V8z"></path></svg>
+                        <span class="num">02</span>
+                        <h4>Кинематографическая<br>3D Анимация</h4>
+                        <p>Режиссура и рендер архитектурных фильмов в высоком разрешении. От раскадровки до финального монтажа с атмосферным саунд-дизайном.</p>
+                    </article>
+                    <article class="service-item reveal-up">
+                        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                        <span class="num">03</span>
+                        <h4>Интерактивные 3D-туры<br>на Unreal Engine 5</h4>
+                        <p>Полноценные виртуальные туры на Unreal Engine 5. Свободное перемещение, смена времени суток, кастомизация отделки и VR-погружение.</p>
+                    </article>
+                    <article class="service-item reveal-up">
+                        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <span class="num">04</span>
+                        <h4>Web Интерактив<br>& Pixel Streaming</h4>
+                        <p>Интеграция тяжелых 3D-проектов прямо на сайт. Клиенты исследуют фотореалистичные UE5 сцены в браузере с любого устройства.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="showcase container reveal-up">
+            <span class="section-label">Иммерсивная демонстрация / 04</span>
+            <div class="showcase-banner">
+                <img src="assets/tour/1BHK_Living_Cam01_8K.webp" loading="lazy" alt="Интерьер 360 panorama" class="showcase-bg">
+                <div class="showcase-content">
+                    <h2>Шагните внутрь вашего будущего проекта</h2>
+                    <p>Среды в реальном времени, позволяющие прочувствовать архитектуру до того, как она будет построена.</p>
+                    <button id="start-tour-btn" class="btn-outline magnetic hover-target" type="button">Запустить тур <span aria-hidden="true">→</span></button>
+                </div>
+                <div class="ue-logo">360 panorama <span>u</span></div>
+            </div>
+        </section>
+
+        <section id="process" class="process container">
+            <span class="section-label reveal-up">Наш процесс / 05</span>
+            <div class="process-timeline">
+                <article class="process-step reveal-up"><span class="num">01</span><h4>Концепция</h4><p>Понимание основной идеи и определение визуального видения проекта.</p></article>
+                <article class="process-step reveal-up"><span class="num">02</span><h4>Дизайн</h4><p>Создание пространственного и стилистического направления.</p></article>
+                <article class="process-step reveal-up"><span class="num">03</span><h4>Визуализация</h4><p>Создание детализированных фотореалистичных рендеров и 3D-сцен.</p></article>
+                <article class="process-step reveal-up"><span class="num">04</span><h4>Интерактив</h4><p>Оживление проектов в интерактивном формате реального времени.</p></article>
+                <article class="process-step reveal-up"><span class="num">05</span><h4>Результат</h4><p>Предоставление финальных материалов кинематографического качества.</p></article>
+            </div>
+        </section>
+
+        <section class="clients container">
+            <div class="clients-header reveal-up">
+                <span class="section-label">С кем работали / 06</span>
+                <h2>Архитектурные бюро, девелоперы и бренды</h2>
+            </div>
+            <div class="marquee-container reveal-up">
+                <div class="marquee-track">
+                    <div class="marquee-item"><img src="assets/clients/Viva_logo.webp" alt="Viva Development" loading="lazy"><span class="client-country">Дубай</span></div>
+                    <div class="marquee-item"><img src="assets/clients/MWD.webp" alt="MWD" loading="lazy"><span class="client-country">США</span></div>
+                    <div class="marquee-item"><img src="assets/clients/VSN.webp" alt="VSN" loading="lazy"><span class="client-country">США</span></div>
+                    <div class="marquee-item"><img src="assets/clients/uxperince.webp" alt="Uxperience" loading="lazy"><span class="client-country">Россия</span></div>
+                    <div class="marquee-item"><img src="assets/clients/auravillas.webp" alt="AURAVILLAS" loading="lazy"><span class="client-country">Таиланд, Пхукет</span></div>
+                    <div class="marquee-item"><img src="assets/clients/Panchshil.webp" alt="Panchshil" loading="lazy"><span class="client-country">Индия</span></div>
+                    <div class="marquee-item"><img src="assets/clients/Cradle_logo.webp" alt="Cradle Media" loading="lazy"><span class="client-country">Нидерланды</span></div>
+                    <div class="marquee-item brand-text"><span>+ ВАШ БРЕНД</span></div>
+                    <div class="marquee-item"><img src="assets/clients/Viva_logo.webp" alt="Viva Development" loading="lazy"><span class="client-country">Дубай</span></div>
+                    <div class="marquee-item"><img src="assets/clients/MWD.webp" alt="MWD" loading="lazy"><span class="client-country">США</span></div>
+                    <div class="marquee-item"><img src="assets/clients/VSN.webp" alt="VSN" loading="lazy"><span class="client-country">США</span></div>
+                    <div class="marquee-item"><img src="assets/clients/uxperince.webp" alt="Uxperience" loading="lazy"><span class="client-country">Россия</span></div>
+                    <div class="marquee-item"><img src="assets/clients/auravillas.webp" alt="AURAVILLAS" loading="lazy"><span class="client-country">Таиланд, Пхукет</span></div>
+                    <div class="marquee-item"><img src="assets/clients/Panchshil.webp" alt="Panchshil" loading="lazy"><span class="client-country">Индия</span></div>
+                    <div class="marquee-item"><img src="assets/clients/Cradle_logo.webp" alt="Cradle Media" loading="lazy"><span class="client-country">Нидерланды</span></div>
+                    <div class="marquee-item brand-text"><span>+ ВАШ БРЕНД</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq container">
+            <div class="faq-layout">
+                <div class="faq-side reveal-up">
+                    <span class="section-label">Частые вопросы / 07</span>
+                    <h2>Что обычно <span class="mono-italic">спрашивают</span> до начала работы</h2>
+                    <p>Если ваш вопрос не покрыт ниже - напишите напрямую, ответим в течение рабочего дня.</p>
+                    <a href="#contact" class="btn-outline magnetic hover-target nav-anchor">Задать вопрос <span aria-hidden="true">→</span></a>
+                </div>
+
+                <div class="faq-list reveal-up">
+                    <div class="faq-item">
+                        <button class="faq-question hover-target" type="button"><span>Сколько времени занимает 3D визуализация проекта?</span><span class="faq-toggle">+</span></button>
+                        <div class="faq-answer"><div class="faq-answer-inner">Создание статичных 3D-рендеров архитектуры или интерьера занимает от 7 рабочих дней после утверждения брифа. Разработка кинематографической 3D-анимации от 60 секунд - от 3 недель. Интерактивные туры и real-time решения на Unreal Engine 5 требуют от 6 недель.</div></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question hover-target" type="button"><span>Как формируется стоимость архитектурной визуализации?</span><span class="faq-toggle">+</span></button>
+                        <div class="faq-answer"><div class="faq-answer-inner">Мы работаем по фиксированной цене без скрытых доплат. Итоговая стоимость зависит от масштаба объекта, степени детализации окружения и требуемого формата. Точную смету предоставляем после изучения чертежей или ТЗ.</div></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question hover-target" type="button"><span>Что входит в базовую цену рендера?</span><span class="faq-toggle">+</span></button>
+                        <div class="faq-answer"><div class="faq-answer-inner">В стоимость включено: концепция, 3D-моделирование по чертежам, настройка освещения и материалов, финальный рендер, постобработка и два раунда правок. Отдельно обсуждаются нестандартные ракурсы, саунд-дизайн, платные 3D-ассеты и исходники сцены.</div></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question hover-target" type="button"><span>Можно ли получить исходные файлы 3ds Max или UE5?</span><span class="faq-toggle">+</span></button>
+                        <div class="faq-answer"><div class="faq-answer-inner">Да, передача исходников возможна и обсуждается на этапе договора как отдельная опция. Права на коммерческие 3D-модели и ассеты передаются в соответствии с лицензионными соглашениями.</div></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question hover-target" type="button"><span>Какие форматы файлов нужны для старта?</span><span class="faq-toggle">+</span></button>
+                        <div class="faq-answer"><div class="faq-answer-inner">Мы принимаем .dwg, .rvt, .skp, .3dm, .fbx, .obj и IFC. Если есть только эскизы или PDF-планировки, студия выполнит 3D-моделирование с нуля.</div></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question hover-target" type="button"><span>Работаете ли вы с девелоперами из других стран?</span><span class="faq-toggle">+</span></button>
+                        <div class="faq-answer"><div class="faq-answer-inner">Да, REALIZM сотрудничает с застройщиками, архитектурными бюро и брендами из Беларуси, России, стран СНГ, Европы и Ближнего Востока. Коммуникация ведется на русском или английском языке.</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-form-section container">
+            <span class="section-label reveal-up">Контакт / 08</span>
+            <div class="contact-form-layout">
+                <div class="contact-form-info reveal-up">
+                    <h2>Расскажите о проекте - пришлём расчёт в течение <span class="mono-italic">24 часов</span></h2>
+                    <p>Чем подробнее опишете задачу, тем точнее будет смета. Если есть чертежи, мудборд или ссылки на референсы, приложите всё к письму после отправки формы.</p>
+
+                    <div class="contact-direct">
+    <a href="tel:+375445989809" class="contact-direct-item magnetic hover-target">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span><strong>+375 (44) 598-98-09</strong></span>
+    </a>
+
+    <a href="https://t.me/karaevelmin" target="_blank" rel="noopener noreferrer" class="contact-direct-item magnetic hover-target">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.13 2.87a1 1 0 0 0-1-.19L2.14 9.1a1 1 0 0 0-.1 1.84l5.44 2.22a1 1 0 0 0 .97-.13l8.03-5.83a.25.25 0 0 1 .35.35l-5.83 8.03a1 1 0 0 0-.13.97l2.22 5.44a1 1 0 0 0 1.84-.1l6.42-18a1 1 0 0 0-.19-1z"></path></svg>
+        <span><strong style="color: var(--neon-blue);">Написать в Telegram</strong></span>
+    </a>
+
+    <a href="https://wa.me/375445989809" target="_blank" rel="noopener noreferrer" class="contact-direct-item magnetic hover-target">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <span><strong style="color: #25D366;">Написать в WhatsApp</strong></span>
+    </a>
+
+    <a href="viber://chat?number=%2B375445989809" target="_blank" rel="noopener noreferrer" class="contact-direct-item magnetic hover-target">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span><strong style="color: var(--neon-purple);">Написать в Viber</strong></span>
+    </a>
+
+    <a href="mailto:karaevelmin@gmail.com" class="contact-direct-item magnetic hover-target">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        <span><strong>karaevelmin@gmail.com</strong></span>
+    </a>
+
+    <div class="contact-direct-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        <span>Минск, Беларусь</span>
+    </div>
+
+    <div class="contact-direct-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Ответ в рабочие часы 10:00-19:00 GMT+3</span>
+    </div>
+</div>
+                </div>
+
+                <form id="contact-form" class="contact-form reveal-up" autocomplete="off" novalidate>
+                    <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                        <label for="cf-work-email">Work email</label>
+                        <input type="text" id="cf-work-email" name="work_email" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="cf-name">Имя <span class="required">*</span></label>
+                            <input type="text" id="cf-name" name="name" required autocomplete="name">
+                        </div>
+                        <div class="form-field">
+                            <label for="cf-email">Email <span class="required">*</span></label>
+                            <input type="email" id="cf-email" name="email" required autocomplete="email">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="cf-company">Компания</label>
+                            <input type="text" id="cf-company" name="company" autocomplete="organization">
+                        </div>
+                        <div class="form-field">
+                            <label for="cf-type">Тип проекта</label>
+                            <select id="cf-type" name="type">
+                                <option value="Статичные рендеры">Статичные рендеры</option>
+                                <option value="3D анимация">3D анимация</option>
+                                <option value="Интерактив UE5">Интерактив UE5</option>
+                                <option value="Комплексный проект">Комплексный проект</option>
+                                <option value="Другое">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="cf-budget">Бюджет</label>
+                            <select id="cf-budget" name="budget">
+                                <option value="-">-</option>
+                                <option value="< €2,000">&lt; €2,000</option>
+                                <option value="€2,000 - €5,000">€2,000 - €5,000</option>
+                                <option value="€5,000 - €15,000">€5,000 - €15,000</option>
+                                <option value="€15,000+">€15,000+</option>
+                                <option value="Обсудим">Обсудим</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="cf-deadline">Дедлайн</label>
+                            <input type="text" id="cf-deadline" name="deadline" placeholder="например, через 4 недели">
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="cf-message">О проекте <span class="required">*</span></label>
+                        <textarea id="cf-message" name="message" rows="5" required placeholder="Что нужно визуализировать? Сколько кадров / минут видео? Какая аудитория?"></textarea>
+                    </div>
+
+                    <label class="form-privacy" for="cf-privacy">
+                        <input type="checkbox" id="cf-privacy" name="privacy" required>
+                        <span>Я согласен с <a href="privacy.html" target="_blank" rel="noopener noreferrer">политикой конфиденциальности</a> и даю согласие на обработку персональных данных. <span class="required">*</span></span>
+                    </label>
+
+                    <button type="submit" class="btn-outline form-submit magnetic hover-target">Отправить заявку <span aria-hidden="true">→</span></button>
+                    <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <div class="tour-modal" id="tour-modal" aria-hidden="true">
+        <button class="modal-close hover-target" id="tour-close" type="button" aria-label="Закрыть тур">×</button>
+        <div class="tour-container">
+            <div id="panorama"></div>
+            <div class="tour-error" id="tour-error">Не удалось загрузить 360-тур. Проверьте подключение к интернету и файлы панорам.</div>
+        </div>
+        <div class="tour-controls" aria-label="Комнаты">
+            <button class="tour-btn hover-target room-btn active" type="button" data-scene="living1">Гостиная 1</button>
+            <button class="tour-btn hover-target room-btn" type="button" data-scene="living2">Гостиная 2</button>
+            <button class="tour-btn hover-target room-btn" type="button" data-scene="bedroom1">Спальня</button>
+            <button class="tour-btn hover-target room-btn" type="button" data-scene="bedroom2">Гардероб</button>
+            <button class="tour-btn hover-target room-btn" type="button" data-scene="bathroom">Ванная</button>
+            <button class="tour-btn hover-target room-btn" type="button" data-scene="study">Кабинет</button>
+        </div>
+    </div>
+
+    <footer id="about">
+        <div class="container">
+            <span class="section-label reveal-up">О нас / 09</span>
+            <div class="footer-grid">
+                <div class="footer-left reveal-up">
+                    <img src="assets/about/founder.webp" alt="Эльмин Караев" class="founder-photo-large" loading="lazy">
+                    <div class="founder-info-large">
+                        <h4>Эльмин Караев</h4>
+                        <span>Основатель студии</span>
+                    </div>
+                </div>
+
+                <div class="footer-right reveal-up">
+                    <div class="footer-right-top">
+                        <h2>Мы верим в силу<br><span class="gradient-text-anim">визуального</span><br>повествования</h2>
+                        <p>Каждый проект - это уникальная история. Мы превращаем архитектурные концепции в визуальный опыт, который вдохновляет зрителей и убеждает инвесторов.</p>
+                    </div>
+                    <div class="footer-right-bottom">
+                        <h3>Давайте создадим что-то<br>выдающееся</h3>
+                        <a href="#contact" class="btn-outline btn-glow magnetic hover-target nav-anchor">Обсудить проект <span aria-hidden="true">→</span></a>
+                        <div class="contact-info">
+                            <a href="mailto:karaevelmin@gmail.com" class="magnetic hover-target">karaevelmin@gmail.com</a>
+                            <span>Минск, Республика Беларусь</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <div class="logo-brand" style="font-size: 1rem;"><span class="logo-real">REAL</span><span class="gradient-text-anim">IZM</span></div>
+                    <span style="display:block; margin-top: 4px; font-size: 0.55rem; color: rgba(255,255,255,0.5); letter-spacing: 0.15em;">СТУДИЯ 3D ВИЗУАЛИЗАЦИИ</span>
+                </div>
+                <div>© 2026 ВСЕ ПРАВА ЗАЩИЩЕНЫ</div>
+                <div class="socials">
+                    <a href="https://www.instagram.com/karaevelmin/" target="_blank" rel="noopener noreferrer" class="magnetic hover-target">INSTAGRAM</a>
+                    <a href="https://www.linkedin.com/in/elminkaraev/" target="_blank" rel="noopener noreferrer" class="magnetic hover-target">LINKEDIN</a>
+                    <a href="https://www.behance.net/elminkaraev" target="_blank" rel="noopener noreferrer" class="magnetic hover-target">BEHANCE</a>
+                    <a href="https://t.me/karaevelmin" target="_blank" rel="noopener noreferrer" class="magnetic hover-target">TELEGRAM</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (() => {
+            "use strict";
+
+            const $ = (selector, root = document) => root.querySelector(selector);
+            const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+            const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+            const safeStorage = {
+                get(key) {
+                    try { return window.localStorage.getItem(key); } catch (error) { return null; }
+                },
+                set(key, value) {
+                    try { window.localStorage.setItem(key, value); } catch (error) {}
+                }
+            };
+
+            function finishIntro() {
+                document.body.classList.add("intro-finished");
+                document.body.classList.remove("is-locked");
+                if (introLogo) introLogo.style.display = "none";
+            }
+
+            const introLogo = $("#intro-logo");
+            const type1 = $("#type1-ru");
+            const type2 = $("#type2-ru");
+            const type3 = $("#type3-ru");
+
+            const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+            async function typeText(element, text, speed = 34) {
+                if (!element) return;
+                element.textContent = "";
+                for (const char of text) {
+                    element.textContent += char;
+                    await delay(speed);
+                }
+            }
+
+            async function runIntroAnimation() {
+                if (!introLogo) return;
+
+                if (prefersReducedMotion) {
+                    if (type1) type1.textContent = "Мы создаём ";
+                    if (type2) type2.classList.add("word-visible");
+                    if (type3) type3.textContent = " пространства до его строительства.";
+                    introLogo.classList.add("typing-finished");
+                    $("#intro-brand")?.classList.add("words-visible", "logo-morph");
+                    introLogo.classList.add("intro-ready");
+                    return;
+                }
+
+                await typeText(type1, "Мы создаём ", 38);
+                type2?.classList.add("word-visible");
+                await delay(520);
+                await typeText(type3, " пространства до его строительства.", 30);
+                await delay(760);
+                introLogo.classList.add("typing-finished");
+                await delay(820);
+                $("#intro-brand")?.classList.add("words-visible");
+                await delay(1300);
+                $("#intro-brand")?.classList.add("logo-morph");
+                await delay(1050);
+                introLogo.classList.add("intro-ready");
+            }
+
+            runIntroAnimation();
+            setTimeout(() => {
+                introLogo?.classList.add("typing-finished");
+                $("#intro-brand")?.classList.add("words-visible", "logo-morph");
+                introLogo?.classList.add("intro-ready");
+            }, 9000);
+
+            let introIsExiting = false;
+
+            async function exitIntro() {
+                if (introIsExiting) return;
+                introIsExiting = true;
+
+                if (prefersReducedMotion) {
+                    finishIntro();
+                    return;
+                }
+
+                const introBrand = $("#intro-brand");
+                const headerLogo = $("header .real-logo .logo-brand");
+                const startButton = $("#start-btn-intro");
+
+                startButton?.animate(
+                    [
+                        { opacity: 1, transform: "translateY(0) scale(1)" },
+                        { opacity: 0, transform: "translateY(10px) scale(0.96)" }
+                    ],
+                    { duration: 260, easing: "ease", fill: "forwards" }
+                );
+
+                if (introBrand && headerLogo) {
+                    const from = introBrand.getBoundingClientRect();
+                    const to = headerLogo.getBoundingClientRect();
+                    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+                    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+                    const scale = Math.max(0.12, Math.min(to.width / from.width, to.height / from.height));
+
+                    introBrand.style.transformOrigin = "center";
+                    await introBrand.animate(
+                        [
+                            { transform: "translate(0, 0) scale(1)", opacity: 1, filter: "blur(0)" },
+                            { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 1, filter: "blur(0)" }
+                        ],
+                        { duration: 950, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" }
+                    ).finished.catch(() => {});
+                }
+
+                finishIntro();
+            }
+
+            $("#start-btn-intro")?.addEventListener("click", exitIntro);
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    if (!document.body.classList.contains("intro-finished") && introLogo?.classList.contains("intro-ready")) {
+                        $("#start-btn-intro")?.focus({ preventScroll: true });
+                    }
+                }, 900);
+            });
+            setTimeout(() => {
+                if (!document.body.classList.contains("intro-finished")) finishIntro();
+            }, 12000);
+
+            const header = $("header");
+            const menuButton = $("#mobile-menu-btn");
+            const navLinks = $("#main-nav");
+
+            window.addEventListener("scroll", () => {
+                header?.classList.toggle("is-scrolled", window.scrollY > 50);
+            }, { passive: true });
+
+            menuButton?.addEventListener("click", () => {
+                const isActive = menuButton.classList.toggle("active");
+                navLinks?.classList.toggle("active", isActive);
+                menuButton.setAttribute("aria-expanded", String(isActive));
+            });
+
+            function closeMobileMenu() {
+                menuButton?.classList.remove("active");
+                navLinks?.classList.remove("active");
+                menuButton?.setAttribute("aria-expanded", "false");
+            }
+
+            $$("a[href^='#']").forEach((link) => {
+                link.addEventListener("click", (event) => {
+                    const targetId = link.getAttribute("href");
+                    if (!targetId || targetId === "#") return;
+                    const target = $(targetId);
+                    if (!target) return;
+
+                    event.preventDefault();
+                    closeMobileMenu();
+                    const offset = header ? header.offsetHeight + 24 : 80;
+                    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top: Math.max(0, top), behavior: prefersReducedMotion ? "auto" : "smooth" });
+                    history.replaceState(null, "", targetId);
+                });
+            });
+
+            const cursor = $(".custom-cursor");
+            const trailContainer = $("#trail-container");
+            let lastTrail = 0;
+
+            if (cursor && trailContainer && matchMedia("(pointer: fine)").matches) {
+                window.addEventListener("mousemove", (event) => {
+                    cursor.style.left = `${event.clientX}px`;
+                    cursor.style.top = `${event.clientY}px`;
+
+                    const now = performance.now();
+                    if (now - lastTrail > 18) {
+                        const particle = document.createElement("span");
+                        particle.className = "trail-particle";
+                        particle.style.left = `${event.clientX}px`;
+                        particle.style.top = `${event.clientY}px`;
+                        trailContainer.appendChild(particle);
+                        requestAnimationFrame(() => {
+                            particle.style.opacity = "0";
+                            particle.style.transform = "translate(-50%, -50%) scale(0.2)";
+                        });
+                        setTimeout(() => particle.remove(), 520);
+                        lastTrail = now;
+                    }
+                });
+                window.addEventListener("mousedown", () => cursor.classList.add("clicking"));
+                window.addEventListener("mouseup", () => cursor.classList.remove("clicking"));
+                $$(".hover-target, a, button, input, textarea, select").forEach((target) => {
+                    target.addEventListener("mouseenter", () => cursor.classList.add("hover"));
+                    target.addEventListener("mouseleave", () => cursor.classList.remove("hover"));
+                });
+            }
+
+            if (!prefersReducedMotion && matchMedia("(pointer: fine)").matches) {
+                $$(".magnetic").forEach((item) => {
+                    item.addEventListener("mousemove", (event) => {
+                        const rect = item.getBoundingClientRect();
+                        const x = event.clientX - rect.left - rect.width / 2;
+                        const y = event.clientY - rect.top - rect.height / 2;
+                        item.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
+                    });
+                    item.addEventListener("mouseleave", () => {
+                        item.style.transform = "";
+                    });
+                });
+            }
+
+            const revealItems = $$(".reveal-up");
+            if ("IntersectionObserver" in window && !prefersReducedMotion) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
+                revealItems.forEach((item) => observer.observe(item));
+            } else {
+                revealItems.forEach((item) => item.classList.add("is-visible"));
+            }
+
+            function scrollTrack(track, direction) {
+                if (!track) return;
+                const amount = Math.max(280, track.clientWidth * 0.72) * direction;
+                track.scrollBy({ left: amount, behavior: prefersReducedMotion ? "auto" : "smooth" });
+            }
+
+            function initProcessCarousel() {
+                const track = $("#case-process-grid");
+                const prevButton = $("#btn-prev");
+                const nextButton = $("#btn-next");
+                if (!track || !prevButton || !nextButton) return;
+
+                const getStep = () => {
+                    const item = $(".case-process-item", track);
+                    if (!item) return Math.max(240, track.clientWidth * 0.6);
+                    const styles = window.getComputedStyle(track);
+                    const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
+                    return item.getBoundingClientRect().width + gap;
+                };
+
+                const updateButtons = () => {
+                    const maxScroll = track.scrollWidth - track.clientWidth - 2;
+                    prevButton.disabled = track.scrollLeft <= 2;
+                    nextButton.disabled = track.scrollLeft >= maxScroll;
+                };
+
+                const move = (direction) => {
+                    track.scrollBy({
+                        left: getStep() * direction,
+                        behavior: prefersReducedMotion ? "auto" : "smooth"
+                    });
+                };
+
+                prevButton.addEventListener("click", () => move(-1));
+                nextButton.addEventListener("click", () => move(1));
+
+                track.addEventListener("wheel", (event) => {
+                    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+                    event.preventDefault();
+                    track.scrollBy({ left: event.deltaY, behavior: "auto" });
+                }, { passive: false });
+
+                let isDragging = false;
+                let startX = 0;
+                let startScroll = 0;
+
+                track.addEventListener("pointerdown", (event) => {
+                    if (event.button !== 0) return;
+                    isDragging = true;
+                    startX = event.clientX;
+                    startScroll = track.scrollLeft;
+                    track.classList.add("dragging");
+                    track.setPointerCapture(event.pointerId);
+                });
+
+                track.addEventListener("pointermove", (event) => {
+                    if (!isDragging) return;
+                    track.scrollLeft = startScroll - (event.clientX - startX);
+                });
+
+                const stopDragging = (event) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    track.classList.remove("dragging");
+                    if (track.hasPointerCapture(event.pointerId)) {
+                        track.releasePointerCapture(event.pointerId);
+                    }
+                    const step = getStep();
+                    const target = Math.round(track.scrollLeft / step) * step;
+                    track.scrollTo({ left: target, behavior: prefersReducedMotion ? "auto" : "smooth" });
+                };
+
+                track.addEventListener("pointerup", stopDragging);
+                track.addEventListener("pointercancel", stopDragging);
+                track.addEventListener("scroll", () => requestAnimationFrame(updateButtons), { passive: true });
+                window.addEventListener("resize", updateButtons);
+                updateButtons();
+            }
+
+            $(".slider-arrow.prev")?.addEventListener("click", () => scrollTrack($("#projects-grid"), -1));
+            $(".slider-arrow.next")?.addEventListener("click", () => scrollTrack($("#projects-grid"), 1));
+            initProcessCarousel();
+
+            const tvModal = $("#tv-modal");
+            const modalPlayer = $("#modal-player");
+            const videoId = "r2b1eX15FOI";
+            const playlistId = "PLhslMUXu5Wn5mvNIEGyl3S0_cLVknFPqv";
+
+            function youtubeSrc() {
+                const origin = encodeURIComponent(window.location.origin === "null" ? "https://realizm.by" : window.location.origin);
+                return `https://www.youtube-nocookie.com/embed/${videoId}?list=${playlistId}&autoplay=1&rel=0&playsinline=1&origin=${origin}`;
+            }
+
+            function openVideoModal() {
+                if (!tvModal || !modalPlayer) return;
+                modalPlayer.src = youtubeSrc();
+                tvModal.classList.add("active");
+                tvModal.setAttribute("aria-hidden", "false");
+                document.body.classList.add("is-locked");
+            }
+
+            function closeVideoModal() {
+                if (!tvModal || !modalPlayer) return;
+                tvModal.classList.remove("active");
+                tvModal.setAttribute("aria-hidden", "true");
+                setTimeout(() => { modalPlayer.src = ""; }, 250);
+                document.body.classList.remove("is-locked");
+            }
+
+            $("#tv-open")?.addEventListener("click", openVideoModal);
+            $("#tv-close")?.addEventListener("click", closeVideoModal);
+            tvModal?.addEventListener("click", (event) => {
+                if (event.target === tvModal) closeVideoModal();
+            });
+
+            $$(".faq-question").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const item = button.closest(".faq-item");
+                    if (!item) return;
+                    const answer = $(".faq-answer", item);
+                    const wasActive = item.classList.contains("active");
+
+                    $$(".faq-item.active").forEach((openItem) => {
+                        openItem.classList.remove("active");
+                        const openAnswer = $(".faq-answer", openItem);
+                        if (openAnswer) openAnswer.style.maxHeight = "0px";
+                    });
+
+                    if (!wasActive) {
+                        item.classList.add("active");
+                        if (answer) answer.style.maxHeight = `${answer.scrollHeight}px`;
+                    }
+                });
+            });
+
+            const contactForm = $("#contact-form");
+            const formStatus = $("#form-status");
+            const submitButton = $(".form-submit", contactForm || document);
+
+            function setFormStatus(message, color = "var(--neon-blue)") {
+                if (!formStatus) return;
+                formStatus.textContent = message;
+                formStatus.style.color = color;
+            }
+
+            contactForm?.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                if ($("#cf-work-email")?.value) {
+                    contactForm.reset();
+                    setFormStatus("Заявка успешно отправлена!");
+                    return;
+                }
+
+                const fields = {
+                    name: $("#cf-name")?.value.trim(),
+                    email: $("#cf-email")?.value.trim(),
+                    company: $("#cf-company")?.value.trim(),
+                    type: $("#cf-type")?.value,
+                    budget: $("#cf-budget")?.value,
+                    deadline: $("#cf-deadline")?.value.trim(),
+                    message: $("#cf-message")?.value.trim(),
+                    privacy: $("#cf-privacy")?.checked
+                };
+
+                if (!fields.name || !fields.email || !fields.message || !fields.privacy) {
+                    setFormStatus("Заполните обязательные поля и подтвердите согласие.", "#ff5577");
+                    return;
+                }
+
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+                    setFormStatus("Проверьте email.", "#ff5577");
+                    return;
+                }
+
+                submitButton?.setAttribute("disabled", "disabled");
+                setFormStatus("Отправка...", "var(--text-dim)");
+
+                try {
+                    const response = await fetch("send_tg.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "Имя": fields.name,
+                            "Email клиента": fields.email,
+                            "Компания": fields.company || "Не указана",
+                            "Тип проекта": fields.type,
+                            "Бюджет": fields.budget,
+                            "Дедлайн": fields.deadline || "Не указан",
+                            "Сообщение": fields.message
+                        })
+                    });
+
+                    let data = {};
+                    try { data = await response.json(); } catch (error) {}
+
+                    if (!response.ok || data.success === false || data.ok === false) {
+                        throw new Error(data.message || `HTTP ${response.status}`);
+                    }
+
+                    setFormStatus("Заявка успешно отправлена!");
+                    contactForm.reset();
+                    setTimeout(() => {
+                        if (formStatus?.textContent === "Заявка успешно отправлена!") setFormStatus("");
+                    }, 8000);
+                } catch (error) {
+                    setFormStatus("Ошибка отправки. Напишите нам на почту или в Telegram.", "#ff5577");
+                } finally {
+                    submitButton?.removeAttribute("disabled");
+                }
+            });
+
+            const tourModal = $("#tour-modal");
+            const tourError = $("#tour-error");
+            let viewer = null;
+            let pannellumPromise = null;
+
+            const tourScenes = {
+                living1: {
+                    type: "equirectangular",
+                    panorama: "assets/tour/1BHK_Living_Cam01_8K.webp",
+                    hotSpots: [
+                        { pitch: -5.2, yaw: 112, type: "scene", text: "Гостиная 2", sceneId: "living2" },
+                        { pitch: -7.3, yaw: 150.2, type: "scene", text: "В спальню", sceneId: "bedroom1" }
+                    ]
+                },
+                living2: {
+                    type: "equirectangular",
+                    panorama: "assets/tour/1BHK_Living_Cam02_8K.webp",
+                    hotSpots: [{ pitch: -13.9, yaw: 102.9, type: "scene", text: "Вернуться назад", sceneId: "living1" }]
+                },
+                bedroom1: {
+                    type: "equirectangular",
+                    panorama: "assets/tour/3d-tour-bedroom-realizm.webp",
+                    hotSpots: [
+                        { pitch: 0, yaw: 90, type: "scene", text: "Гардероб", sceneId: "bedroom2" },
+                        { pitch: 0, yaw: -90, type: "scene", text: "Выйти в гостиную", sceneId: "living1" }
+                    ]
+                },
+                bedroom2: {
+                    type: "equirectangular",
+                    panorama: "assets/tour/1BHK_Bedroom_cam02_8K.webp",
+                    hotSpots: [
+                        { pitch: 0, yaw: 0, type: "scene", text: "Ванная комната", sceneId: "bathroom" },
+                        { pitch: 0, yaw: 180, type: "scene", text: "К кровати", sceneId: "bedroom1" }
+                    ]
+                },
+                bathroom: {
+                    type: "equirectangular",
+                    panorama: "assets/tour/1BHK_Bedroom_Bathroom_8K.webp",
+                    hotSpots: [{ pitch: 0, yaw: 180, type: "scene", text: "Выйти", sceneId: "bedroom2" }]
+                },
+                study: {
+                    type: "equirectangular",
+                    panorama: "assets/tour/1BHK_Study_Cam01_8K.webp",
+                    hotSpots: [{ pitch: 0, yaw: 180, type: "scene", text: "Выйти", sceneId: "living1" }]
+                }
+            };
+
+            function loadPannellum() {
+                if (window.pannellum) return Promise.resolve();
+                if (pannellumPromise) return pannellumPromise;
+
+                pannellumPromise = new Promise((resolve, reject) => {
+                    const script = document.createElement("script");
+                    script.src = "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js";
+                    script.async = true;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+
+                return pannellumPromise;
+            }
+
+            function setActiveRoom(sceneId) {
+                $$(".room-btn").forEach((button) => button.classList.toggle("active", button.dataset.scene === sceneId));
+            }
+
+            async function initTour() {
+                if (tourError) tourError.style.display = "none";
+                try {
+                    await loadPannellum();
+                    if (viewer) viewer.destroy();
+                    viewer = window.pannellum.viewer("panorama", {
+                        hotSpotDebug: false,
+                        default: {
+                            firstScene: "living1",
+                            autoLoad: true,
+                            sceneFadeDuration: 800,
+                            compass: false,
+                            showZoomCtrl: false,
+                            mouseZoom: true
+                        },
+                        scenes: tourScenes
+                    });
+                    viewer.on("scenechange", setActiveRoom);
+                    setActiveRoom("living1");
+                } catch (error) {
+                    if (tourError) tourError.style.display = "block";
+                }
+            }
+
+            function openTour() {
+                if (!tourModal) return;
+                tourModal.classList.add("active");
+                tourModal.setAttribute("aria-hidden", "false");
+                document.body.classList.add("is-locked");
+                initTour();
+            }
+
+            function closeTour() {
+                if (!tourModal) return;
+                tourModal.classList.remove("active");
+                tourModal.setAttribute("aria-hidden", "true");
+                document.body.classList.remove("is-locked");
+                if (viewer) {
+                    viewer.destroy();
+                    viewer = null;
+                }
+            }
+
+            $("#start-tour-btn")?.addEventListener("click", openTour);
+            $("#tour-close")?.addEventListener("click", closeTour);
+            tourModal?.addEventListener("click", (event) => {
+                if (event.target === tourModal) closeTour();
+            });
+            $$(".room-btn").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const sceneId = button.dataset.scene;
+                    if (viewer && sceneId) {
+                        viewer.loadScene(sceneId);
+                        setActiveRoom(sceneId);
+                    }
+                });
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key !== "Escape") return;
+                if (tvModal?.classList.contains("active")) closeVideoModal();
+                if (tourModal?.classList.contains("active")) closeTour();
+                closeMobileMenu();
+            });
+
+            function loadAnalytics() {
+                console.info("Analytics scripts can be loaded here after real IDs are added.");
+            }
+
+            const cookieBanner = $("#cookie-banner");
+            const consent = safeStorage.get("cookieConsent");
+            setTimeout(() => {
+                if (!consent) cookieBanner?.classList.add("show");
+                if (consent === "accepted") loadAnalytics();
+            }, 1500);
+
+            $("#btn-accept-cookie")?.addEventListener("click", () => {
+                safeStorage.set("cookieConsent", "accepted");
+                cookieBanner?.classList.remove("show");
+                loadAnalytics();
+            });
+
+            $("#btn-decline-cookie")?.addEventListener("click", () => {
+                safeStorage.set("cookieConsent", "declined");
+                cookieBanner?.classList.remove("show");
+            });
+        })();
+    </script>
+</body>
+</html>
